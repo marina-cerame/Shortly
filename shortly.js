@@ -2,6 +2,7 @@ var express = require('express');
 var open = require('open-uri');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
+var partials = require('express-partials');
 
 var db = require('./db/config');
 var Users = require('./db/users');
@@ -13,21 +14,28 @@ var Link = require('./db/link');
 /*  ------ SERVER ------ */
 
 var app = express();
-
-app.use(express.bodyParser())
-app.use(express.static(__dirname + '/public'));
-app.use(express.cookieParser('shhhh, very secret'));
-app.use(express.session());
+app.configure(function() {
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'ejs');
+  app.use(partials());
+  app.use(express.bodyParser())
+  app.use(express.static(__dirname + '/public'));
+  app.use(express.cookieParser('shhhh, very secret'));
+  app.use(express.session());
+});
 
 app.get(['/', '/create', '/links'], function (req, res, next) {
   var userLoggedIn = loggedIn(req);
   if(!userLoggedIn) {
-    // TODO: Does not work with Backbone route changes 
     res.redirect('/login');
   } else {
     next();
   }
 });
+
+app.get('/', function (req, res) {
+  res.render('index');
+})
 
 app.get('/links', function (req, res) {
   Links.fetch().then(function(response) {
@@ -80,11 +88,10 @@ app.post('/links', function (req, res) {
       });
     }
   });
-
 });
 
 app.get('/login', function (req, res) {
-  res.sendfile(__dirname + '/public/login.html');
+  res.render('login');
 });
 
 app.post('/login', function (req, res) {
@@ -116,7 +123,7 @@ app.get('/logout', function (req, res) {
 })
 
 app.get('/signup', function (req, res) {
-  res.sendfile(__dirname + '/public/signup.html');
+  res.render('signup');
 });
 
 app.post('/signup', function (req, res) {
