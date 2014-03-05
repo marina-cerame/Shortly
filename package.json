@@ -6,7 +6,6 @@
   "repository": "",
   "license": "Proprietary",
   "private": true,
-  "preferGlobal": true,
   "dependencies": {
     "open-uri": "0.4.1",
     "bcrypt": "0.7.7",

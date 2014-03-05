@@ -1,5 +1,4 @@
 Shortly.LinksView = Backbone.View.extend({
-
   className: 'links',
 
   initialize: function(){
@@ -17,8 +16,7 @@ Shortly.LinksView = Backbone.View.extend({
   },
 
   addOne: function(item){
-    var view = new Shortly.LinkView( {model: item} );
+    var view = new Shortly.LinkView({ model: item });
     this.$el.append(view.render().el);
   }
-
 });
