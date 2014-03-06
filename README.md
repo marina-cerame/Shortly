@@ -63,7 +63,7 @@ Basic Requirements:
   * [ ] Require users to log in to see shortened links
   * [ ] Add a user model with `username`, `passwordHash`, `passwordSalt` and some identifying information (such as an id hash)
   * [ ] Allow users to register for a new accounts, or to login - build pages for login and sign up
-  * [ ] Add a `loggedIn` helper to all server routes that require login, redirect to a login page as needed
+  * [ ] Add a `isLoggedIn` helper to all server routes that require login, redirect to a login page as needed
   * [ ] Store the user's identifying information in the session, and auto log-in the user when the user returns
 
 Extra Credit:
