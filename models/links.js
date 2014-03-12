@@ -1,7 +1,7 @@
 var db = require('./config');
 var Link = require('./link');
 
-var Links = new db.Collection;
+var Links = new db.Collection();
 
 Links.model = Link;
 

@@ -1,4 +1,5 @@
 var Bookshelf = require('bookshelf');
+var path = require('path');
 
 var db = Bookshelf.initialize({
   client: 'sqlite3',
@@ -8,7 +9,7 @@ var db = Bookshelf.initialize({
     password: 'password',
     database: 'shortlydbt',
     charset: 'utf8',
-    filename: './mydb.sqlite'
+    filename: path.join(__dirname, '../db/shortly.sqlite')
   }
 });
 

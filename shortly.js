@@ -1,17 +1,16 @@
 var express = require('express');
-var util = require('./lib/utility')
+var util = require('./lib/utility');
 var partials = require('express-partials');
 
-var db = require('./db/config');
-var Users = require('./db/users');
-var User = require('./db/user');
-var Links = require('./db/links');
-var Link = require('./db/link');
+var db = require('./models/config');
+var Users = require('./models/users');
+var User = require('./models/user');
+var Links = require('./models/links');
+var Link = require('./models/link');
 
-
-/*  ------ SERVER ------ */
 
 var app = express();
+
 app.configure(function() {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
@@ -24,8 +23,7 @@ app.configure(function() {
 
 app.get(['/', '/create', '/links'], function(req, res, next) {
 // app.get(['/', '/create'], function(req, res, next) {
-  var userLoggedIn = util.isLoggedIn(req);
-  if (!userLoggedIn) {
+  if (!util.isLoggedIn(req)) {
     res.redirect('/login');
   } else {
     next();
@@ -37,9 +35,8 @@ app.get('/', function(req, res) {
 });
 
 app.get('/links', function(req, res) {
-  Links.fetch().then(function(response) {
-    var links = response.models;
-    res.send(200, links);
+  Links.fetch().then(function(links) {
+    res.send(200, links.models);
   })
 });
 
@@ -47,7 +44,7 @@ app.post('/links', function(req, res) {
   var uri = req.body.url;
 
   if (!util.isValidUrl(uri)) {
-    console.log('Not a valid url')
+    console.log('Not a valid url');
     return res.send(404);
   }
 
@@ -57,7 +54,7 @@ app.post('/links', function(req, res) {
     } else {
       util.getUrlTitle(uri, function(title) {
         var sha = util.createSha(uri);
-        var newLink = new Link({
+        var link = new Link({
           url: uri,
           title: title,
           code: sha,
@@ -65,7 +62,7 @@ app.post('/links', function(req, res) {
           visits: 0
         });
 
-        newLink.save().then(function(newLink) {
+        link.save().then(function(newLink) {
           Links.add(newLink);
 
           app.get('/' + sha, function(req, res) {
@@ -95,20 +92,21 @@ app.get('/login', function(req, res) {
 app.post('/login', function(req, res) {
   var username = req.body.username;
   var password = req.body.password;
+
   new User({ username: username })
     .fetch()
     .then(function(user) {
       if (!user) {
-        //TODO: how do I keep this on /login without redirect?
+        // TODO: display a message to the user saying that credentials are bad
         res.redirect('/login');
       } else {
         var foundUser = user.attributes;
         var userPassword = foundUser.password;
         util.comparePassword(password, userPassword, function(err, match) {
           if (match) {
-            createSession(req, res, user);
+            util.createSession(app, req, res, user);
           } else {
-            //TODO: how do I keep this on /login without redirect?
+            // TODO: display a message to the user saying that credentials are bad
             res.redirect('/login');
           }
         })
@@ -141,46 +139,16 @@ app.post('/signup', function(req, res) {
           });
           newUser.save()
             .then(function(newUser) {
-              createSession(req, res, newUser);
+              util.createSession(app, req, res, newUser);
               Users.add(newUser);
             });
         });
       } else {
-        //TODO: how do I keep this on /signup without redirect?
+        // TODO: display a message to the user saying that credentials are bad
+        console.log('Account already exists');
         res.redirect('/signup')
       }
     })
 });
 
 app.listen(4568);
-
-
-/*  ------ UTILITY ------ */
-
-// TODO: Break the rest of these out into another file
-// how do I transfer the functions that use app -- turns into a circular reference, no? should I define app in the util file?
-
-var addShortenedUrlRedirects = function() {
-  Links.fetch()
-    .then(function(allLinks) {
-      var entries = allLinks.models;
-      entries.forEach(function(link) {
-        var sha = link.code;
-        app.get('/' + sha, function(req, res) {
-          Links.findOne({ code: sha }).exec(function(err, entry) {
-            entry.visits = entry.visits += 1;
-            entry.save();
-            res.redirect(entry.url)
-          })
-        });
-      });
-    });
-}
-
-var createSession = function(req, res, newUser) {
-  addShortenedUrlRedirects();
-  return req.session.regenerate(function() {
-      req.session.user = newUser;
-      res.redirect('/');
-    });
-};

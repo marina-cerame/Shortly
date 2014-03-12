@@ -1,11 +1,16 @@
 var expect = require('chai').expect;
 var request = require('request');
 
-var db = require('../db/config');
-var Users = require('../db/users');
-var User = require('../db/user');
-var Links = require('../db/links');
-var Link = require('../db/link');
+// TODO: Assumes `shortly.js` exports an express app, but doesn't call app.listen
+// var app = require('../shortly');
+// var request = require('supertest')(app);
+
+var db = require('../models/config');
+var Users = require('../models/users');
+var User = require('../models/user');
+var Links = require('../models/links');
+var Link = require('../models/link');
+var util = require('../lib/util');
 
 describe('', function() {
 
@@ -19,18 +24,25 @@ describe('', function() {
     db.knex('urls')
       .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
       .del()
-      .then(function() {
-        // TODO: waaaat why do I need this cb?
+      // TODO: Does a `catch` execute the query?
+      .catch(function(err) {
+        throw {
+          type: 'DatabaseError',
+          message: 'Failed to create test setup data'
+        };
       });
 
     // delete user Phillip from db so it can be created later for the test
     db.knex('users')
       .where('username', '=', 'Phillip')
       .del()
-      .then(function() {
-        // TODO: waaaat why do I need this cb?
+      // TODO: Does a `catch` execute the query?
+      .catch(function(err) {
+        throw {
+          type: 'DatabaseError',
+          message: 'Failed to create test setup data'
+        };
       });
-
   });
 
   it('Shortens links', function(done) {
@@ -40,7 +52,8 @@ describe('', function() {
       'json': {
         'url': 'http://www.roflzoo.com/'
       }
-    }
+    };
+
     request(options, function(error, res, body) {
       expect(res.body.url).to.equal('http://www.roflzoo.com/');
       done();
@@ -48,6 +61,11 @@ describe('', function() {
   });
 
   it('Only shortens valid urls, returning a 404 - Not found for invalid urls', function(done) {
+    supertest.post('/links')
+      .send({ 'url': 'definitely not a valid url' })
+      .expect('body', 'Not Found')
+      .end(done);
+
     var options = {
       'method': 'POST',
       'uri': 'http://127.0.0.1:4568/links',
@@ -103,7 +121,8 @@ describe('', function() {
           'json': {
             'url': 'http://www.roflzoo.com/'
           }
-        }
+        };
+
         request(options, function(error, res, body) {
           var secondCode = res.body.code;
           expect(secondCode).to.equal(firstCode);
@@ -151,7 +170,8 @@ describe('', function() {
         'username': 'Phillip',
         'password': 'Phillip'
       }
-    }
+    };
+
     request(options, function(error, res, body) {
       expect(res.headers.location).to.equal('/');
       request('http://127.0.0.1:4568/logout', function(err, res, body) {
@@ -168,7 +188,8 @@ describe('', function() {
         'username': 'Phillip',
         'password': 'Phillip'
       }
-    }
+    };
+
     request(options, function(error, res, body) {
       expect(res.headers.location).to.equal('/');
       done();
@@ -192,7 +213,8 @@ describe('', function() {
         'username': 'Fred',
         'password': 'Fred'
       }
-    }
+    };
+
     request(options, function(error, res, body) {
       console.log('res', body);
       expect(res.headers.location).to.equal('/login');

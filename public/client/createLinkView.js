@@ -1,4 +1,4 @@
-Shortly.LinkCreateView = Backbone.View.extend({
+Shortly.createLinkView = Backbone.View.extend({
   className: 'creator',
 
   template: Templates['create'],
@@ -34,6 +34,7 @@ Shortly.LinkCreateView = Backbone.View.extend({
     this.$el.find('.message')
       .html('Please enter a valid URL')
       .addClass('error');
+    return this;
   },
 
   startSpinner: function() {
