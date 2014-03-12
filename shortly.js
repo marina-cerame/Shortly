@@ -1,7 +1,5 @@
 var express = require('express');
-var open = require('open-uri');
-var crypto = require('crypto');
-var bcrypt = require('bcrypt');
+var util = require('./lib/utility')
 var partials = require('express-partials');
 
 var db = require('./db/config');
@@ -25,7 +23,8 @@ app.configure(function() {
 });
 
 app.get(['/', '/create', '/links'], function(req, res, next) {
-  var userLoggedIn = isLoggedIn(req);
+// app.get(['/', '/create'], function(req, res, next) {
+  var userLoggedIn = util.isLoggedIn(req);
   if (!userLoggedIn) {
     res.redirect('/login');
   } else {
@@ -47,17 +46,17 @@ app.get('/links', function(req, res) {
 app.post('/links', function(req, res) {
   var uri = req.body.url;
 
-  if (!isValidUrl(uri)) {
+  if (!util.isValidUrl(uri)) {
     console.log('Not a valid url')
-    return res.send(500);
+    return res.send(404);
   }
 
   new Link({ url: uri }).fetch().then(function(found) {
     if (found) {
       res.send(200, found.attributes);
     } else {
-      getUrlTitle(uri, function(title) {
-        var sha = createSha(uri);
+      util.getUrlTitle(uri, function(title) {
+        var sha = util.createSha(uri);
         var newLink = new Link({
           url: uri,
           title: title,
@@ -72,19 +71,17 @@ app.post('/links', function(req, res) {
           app.get('/' + sha, function(req, res) {
             new Link({ code: sha }).fetch().then(function(found) {
               var updatedVisits = found.attributes.visits += 1;
-
               db.knex('urls')
-              .where('code', '=', sha)
-              .update({
-                visits: updatedVisits
-              }).then(function() {
-                res.redirect(found.attributes.url);
-              });
+                .where('code', '=', sha)
+                .update({
+                  visits: updatedVisits
+                }).then(function() {
+                  res.redirect(found.attributes.url);
+                });
             });
           });
-          console.log('sending', newLink);
-          res.send(200, newLink);
 
+          res.send(200, newLink);
         });
       });
     }
@@ -102,15 +99,17 @@ app.post('/login', function(req, res) {
     .fetch()
     .then(function(user) {
       if (!user) {
-        res.redirect('/signup');
+        //TODO: how do I keep this on /login without redirect?
+        res.redirect('/login');
       } else {
         var foundUser = user.attributes;
         var userPassword = foundUser.password;
-        comparePassword(password, userPassword, function(err, match) {
+        util.comparePassword(password, userPassword, function(err, match) {
           if (match) {
             createSession(req, res, user);
           } else {
-            res.redirect('/signup');
+            //TODO: how do I keep this on /login without redirect?
+            res.redirect('/login');
           }
         })
       }
@@ -121,7 +120,7 @@ app.get('/logout', function(req, res) {
   req.session.destroy(function(){
     res.redirect('/login');
   });
-})
+});
 
 app.get('/signup', function(req, res) {
   res.render('signup');
@@ -131,11 +130,11 @@ app.post('/signup', function(req, res) {
   var username = req.body.username;
   var password = req.body.password;
 
-   new User({ username: username })
+  new User({ username: username })
     .fetch()
     .then(function(user) {
       if (!user) {
-        hashPassword(password, function(hashedPassword) {
+        util.hashPassword(password, function(hashedPassword) {
           var newUser = new User({
             username: username,
             password: hashedPassword
@@ -147,7 +146,8 @@ app.post('/signup', function(req, res) {
             });
         });
       } else {
-        res.redirect('/login')
+        //TODO: how do I keep this on /signup without redirect?
+        res.redirect('/signup')
       }
     })
 });
@@ -157,37 +157,8 @@ app.listen(4568);
 
 /*  ------ UTILITY ------ */
 
-// TODO: Break this out into another file
-
-var getUrlTitle = function(url, cb) {
-  open(url, function(err, html) {
-    if (err) {
-      console.log('Error reading url heading: ', err);
-      return;
-    } else {
-      var tag = /<title>(.*)<\/title>/;
-      var title = html.match(tag)[1];
-      cb(title);
-    }
-  });
-};
-
-var isValidUrl = (function() {
-  var rValidUrl = /^(?!mailto:)(?:(?:https?|ftp):\/\/)?(?:\S+(?::\S*)?@)?(?:(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[0-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))|localhost)(?::\d{2,5})?(?:\/[^\s]*)?$/i;
-  return function(url) {
-    return url.match(rValidUrl);
-  };
-}());
-
-var createSha = function(uri) {
-  var shasum = crypto.createHash('sha1');
-  shasum.update(uri);
-  return shasum.digest('hex').slice(0, 5);
-};
-
-var isLoggedIn = function(req, res) {
-  return req.session ? !!req.session.user : false;
-};
+// TODO: Break the rest of these out into another file
+// how do I transfer the functions that use app -- turns into a circular reference, no? should I define app in the util file?
 
 var addShortenedUrlRedirects = function() {
   Links.fetch()
@@ -213,24 +184,3 @@ var createSession = function(req, res, newUser) {
       res.redirect('/');
     });
 };
-
-var hashPassword = function(password, cb) {
-    // 10 is the number of rounds to process the data for
-    bcrypt.genSalt(10, function(err, salt) {
-      if (err) {
-        return console.error('error salting password in first stage', err);
-      }
-      bcrypt.hash(password, salt, function(err, hash) {
-        if (err) {
-          return console.error('error salting password', err);
-        }
-        return cb(hash);
-      });
-    });
-}
-
-var comparePassword = function(attemptedPassword, userPassword, cb) {
-  bcrypt.compare(attemptedPassword, userPassword, function(err, isMatch) {
-    return cb(err, isMatch);
-  });
-}
