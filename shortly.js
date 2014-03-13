@@ -88,7 +88,7 @@ app.post('/links', function(req, res) {
 
         var click = new Click({
           url: uri,
-          updatedAt: new Date()
+          createdAt: new Date()
         });
         click.link = link;
         click.save().then(function () {
@@ -97,29 +97,7 @@ app.post('/links', function(req, res) {
             Links.add(newLink);
 
             app.get('/' + sha, function(req, res) {
-              new Link({ code: sha }).fetch().then(function(found) {
-
-                var click = new Click({
-                  url: uri,
-                  updatedAt: new Date()
-                });
-                click.link = link;
-
-                click.save().then(function () {
-                  db.knex('clicks')
-                    .select()
-                    .then(function(res) {
-                      console.log('res', res);
-                    });
-                  db.knex('urls')
-                    .where('code', '=', sha)
-                    .update({
-                      visits: found.attributes.visits += 1,
-                    }).then(function() {
-                      res.redirect(found.attributes.url);
-                    });
-                });
-              });
+              util.addShortenedUrlRedirect(app, link);
             });
 
             res.send(200, newLink);

@@ -31,7 +31,7 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
   if(!exists) {
     db.knex.schema.createTable('clicks', function (click) {
       click.string('url');
-      click.dateTime('updatedAt');
+      click.dateTime('createdAt');
     }).then(function (table) {
       console.log('Created Table', table);
     });
