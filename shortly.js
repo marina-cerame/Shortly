@@ -7,6 +7,7 @@ var Users = require('./models/users');
 var User = require('./models/user');
 var Links = require('./models/links');
 var Link = require('./models/link');
+var Click = require('./models/click');
 
 
 var app = express();
@@ -21,8 +22,23 @@ app.configure(function() {
   app.use(express.session());
 });
 
-app.get(['/', '/create', '/links'], function(req, res, next) {
-// app.get(['/', '/create'], function(req, res, next) {
+app.get('/', function(req, res, next) {
+  if (!util.isLoggedIn(req)) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+});
+
+app.get('/links', function(req, res, next) {
+  if (!util.isLoggedIn(req)) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+});
+
+app.get('/create', function(req, res, next) {
   if (!util.isLoggedIn(req)) {
     res.redirect('/login');
   } else {
@@ -31,6 +47,10 @@ app.get(['/', '/create', '/links'], function(req, res, next) {
 });
 
 app.get('/', function(req, res) {
+  res.render('index');
+});
+
+app.get('/create', function(req, res) {
   res.render('index');
 });
 
@@ -45,14 +65,18 @@ app.post('/links', function(req, res) {
 
   if (!util.isValidUrl(uri)) {
     console.log('Not a valid url');
-    return res.send(404);
+    return res.send(500);
   }
 
   new Link({ url: uri }).fetch().then(function(found) {
     if (found) {
       res.send(200, found.attributes);
     } else {
-      util.getUrlTitle(uri, function(title) {
+      util.getUrlTitle(uri, function(err, title) {
+        if (err) {
+          console.log('Error reading URL heading: ', err);
+          return res.send(500);
+        }
         var sha = util.createSha(uri);
         var link = new Link({
           url: uri,
@@ -62,23 +86,44 @@ app.post('/links', function(req, res) {
           visits: 0
         });
 
-        link.save().then(function(newLink) {
-          Links.add(newLink);
+        var click = new Click({
+          url: uri,
+          updatedAt: new Date()
+        });
+        click.link = link;
+        click.save().then(function () {
 
-          app.get('/' + sha, function(req, res) {
-            new Link({ code: sha }).fetch().then(function(found) {
-              var updatedVisits = found.attributes.visits += 1;
-              db.knex('urls')
-                .where('code', '=', sha)
-                .update({
-                  visits: updatedVisits
-                }).then(function() {
-                  res.redirect(found.attributes.url);
+          link.save().then(function(newLink) {
+            Links.add(newLink);
+
+            app.get('/' + sha, function(req, res) {
+              new Link({ code: sha }).fetch().then(function(found) {
+
+                var click = new Click({
+                  url: uri,
+                  updatedAt: new Date()
                 });
-            });
-          });
+                click.link = link;
 
-          res.send(200, newLink);
+                click.save().then(function () {
+                  db.knex('clicks')
+                    .select()
+                    .then(function(res) {
+                      console.log('res', res);
+                    });
+                  db.knex('urls')
+                    .where('code', '=', sha)
+                    .update({
+                      visits: found.attributes.visits += 1,
+                    }).then(function() {
+                      res.redirect(found.attributes.url);
+                    });
+                });
+              });
+            });
+
+            res.send(200, newLink);
+          });
         });
       });
     }

@@ -1,7 +1,11 @@
 var db = require('./config');
+var Clicks = require('./click');
 
-var link = db.Model.extend({
-  tableName: 'urls'
+var Link = db.Model.extend({
+  tableName: 'urls',
+  clicks: function() {
+    return this.hasMany(Click);
+  }
 });
 
-module.exports = link;
+module.exports = Link;

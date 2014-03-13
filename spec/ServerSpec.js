@@ -13,7 +13,6 @@ var Link = require('../models/link');
 var util = require('../lib/util');
 
 describe('', function() {
-
   before(function() {
     // log out currently signed in user
     request('http://127.0.0.1:4568/logout', function(err, res, body) {
@@ -24,7 +23,6 @@ describe('', function() {
     db.knex('urls')
       .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
       .del()
-      // TODO: Does a `catch` execute the query?
       .catch(function(err) {
         throw {
           type: 'DatabaseError',
@@ -36,7 +34,6 @@ describe('', function() {
     db.knex('users')
       .where('username', '=', 'Phillip')
       .del()
-      // TODO: Does a `catch` execute the query?
       .catch(function(err) {
         throw {
           type: 'DatabaseError',
@@ -61,18 +58,18 @@ describe('', function() {
   });
 
   it('Only shortens valid urls, returning a 404 - Not found for invalid urls', function(done) {
-    supertest.post('/links')
-      .send({ 'url': 'definitely not a valid url' })
-      .expect('body', 'Not Found')
-      .end(done);
-
+    // supertest.post('/links')
+    //   .send({ 'url': 'definitely not a valid url' })
+    //   .expect('body', 'Not Found')
+    //   .end(done);
     var options = {
       'method': 'POST',
       'uri': 'http://127.0.0.1:4568/links',
       'json': {
         'url': 'definitely not a valid url'
       }
-    }
+    };
+
     request(options, function(error, res, body) {
       expect(body).to.equal('Not Found');
       done();
@@ -80,7 +77,7 @@ describe('', function() {
   });
 
   it('New links create a database entry', function(done) {
-    var foundUrl = '';
+    var foundUrl;
     db.knex('urls')
       .where('url', '=', 'http://www.roflzoo.com/')
       .then(function(urls) {
@@ -94,7 +91,7 @@ describe('', function() {
   });
 
   it('Fetches the link url title', function (done) {
-    var foundTitle = '';
+    var foundTitle;
     db.knex('urls')
       .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
       .then(function(urls) {
