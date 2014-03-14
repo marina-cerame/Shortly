@@ -1,16 +1,11 @@
 var expect = require('chai').expect;
 var request = require('request');
 
-// TODO: Assumes `shortly.js` exports an express app, but doesn't call app.listen
-// var app = require('../shortly');
-// var request = require('supertest')(app);
-
 var db = require('../models/config');
 var Users = require('../models/users');
 var User = require('../models/user');
 var Links = require('../models/links');
 var Link = require('../models/link');
-var util = require('../lib/util');
 
 describe('', function() {
   before(function() {
@@ -58,10 +53,6 @@ describe('', function() {
   });
 
   it('Only shortens valid urls, returning a 404 - Not found for invalid urls', function(done) {
-    // supertest.post('/links')
-    //   .send({ 'url': 'definitely not a valid url' })
-    //   .expect('body', 'Not Found')
-    //   .end(done);
     var options = {
       'method': 'POST',
       'uri': 'http://127.0.0.1:4568/links',
@@ -129,10 +120,26 @@ describe('', function() {
   });
 
   it('Shortcode redirects to correct url', function(done) {
-    request('http://127.0.0.1:4568/582d6', function(error, res, body) {
-      var currentLocation = res.request.href;
-      expect(currentLocation).to.equal('http://www.roflzoo.com/');
-      done();
+    this.timeout(5000);
+    setTimeout(done, 3000);
+    db.knex('urls')
+      .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
+      .then(function(urls) {
+        if (urls['0'] && urls['0']['code']) {
+          var sha = urls['0']['code'];
+        }
+        var options = {
+          'method': 'GET',
+          'uri': 'http://127.0.0.1:4568/' + sha,
+          'timeout': 5000
+        };
+
+        request(options, function(error, res, body) {
+          console.log('shortcode redirect', error, res)
+          var currentLocation = res.request.href;
+          expect(currentLocation).to.equal('http://www.roflzoo.com/');
+          done();
+        });
     });
   });
 
@@ -193,13 +200,26 @@ describe('', function() {
     });
   });
 
-    // TODO: What should I do to test for all links? This sends back a string.
+  // TODO: What should I do to test for all links? This sends back a string.
   it('Returns all of the links to display on the links page', function(done) {
-    request('http://127.0.0.1:4568/links', function(error, res, body) {
-      console.log('all links', body);
-      expect(body).to.include('"title": "Rofl Zoo - Daily funny animal pictures"');
-      done();
+    var options = {
+      'method': 'POST',
+      'uri': 'http://127.0.0.1:4568/login',
+      'json': {
+        'username': 'Phillip',
+        'password': 'Phillip'
+      }
+    };
+
+    // enable cookies for login information
+    request = request.defaults({jar: true});
+    request(options, function(error, res, body) {
+      request('http://127.0.0.1:4568/links', function(error, res, body) {
+        expect(body).to.include('"title": "Rofl Zoo - Daily funny animal pictures"');
+        done();
+      });
     });
+
   });
 
   it('Users that do not exist are kept on login page', function(done) {
@@ -213,7 +233,6 @@ describe('', function() {
     };
 
     request(options, function(error, res, body) {
-      console.log('res', body);
       expect(res.headers.location).to.equal('/login');
       done();
     });

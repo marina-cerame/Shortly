@@ -12,6 +12,8 @@ var Click = require('./models/click');
 
 var app = express();
 
+global.userLoggedIn = false;
+
 app.configure(function() {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
@@ -64,8 +66,8 @@ app.post('/links', function(req, res) {
   var uri = req.body.url;
 
   if (!util.isValidUrl(uri)) {
-    console.log('Not a valid url');
-    return res.send(500);
+    console.log('Not a valid url: ', uri);
+    return res.send(404);
   }
 
   new Link({ url: uri }).fetch().then(function(found) {
@@ -75,7 +77,7 @@ app.post('/links', function(req, res) {
       util.getUrlTitle(uri, function(err, title) {
         if (err) {
           console.log('Error reading URL heading: ', err);
-          return res.send(500);
+          return res.send(404);
         }
         var sha = util.createSha(uri);
         var link = new Link({
@@ -97,7 +99,7 @@ app.post('/links', function(req, res) {
             Links.add(newLink);
 
             app.get('/' + sha, function(req, res) {
-              util.addShortenedUrlRedirect(app, link);
+              return util.addShortenedUrlRedirect(app, link);
             });
 
             res.send(200, newLink);
@@ -120,7 +122,6 @@ app.post('/login', function(req, res) {
     .fetch()
     .then(function(user) {
       if (!user) {
-        // TODO: display a message to the user saying that credentials are bad
         res.redirect('/login');
       } else {
         var foundUser = user.attributes;
@@ -129,7 +130,6 @@ app.post('/login', function(req, res) {
           if (match) {
             util.createSession(app, req, res, user);
           } else {
-            // TODO: display a message to the user saying that credentials are bad
             res.redirect('/login');
           }
         })
@@ -139,6 +139,8 @@ app.post('/login', function(req, res) {
 
 app.get('/logout', function(req, res) {
   req.session.destroy(function(){
+    // TOOD: global?
+    global.userLoggedIn = false;
     res.redirect('/login');
   });
 });
@@ -167,7 +169,6 @@ app.post('/signup', function(req, res) {
             });
         });
       } else {
-        // TODO: display a message to the user saying that credentials are bad
         console.log('Account already exists');
         res.redirect('/signup')
       }

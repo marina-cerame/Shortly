@@ -9,12 +9,12 @@ var db = Bookshelf.initialize({
     password: 'password',
     database: 'shortlydb',
     charset: 'utf8',
-    filename: path.join(__dirname, '../db/shortly.sqlite')
+    filename: path.join(__dirname, '../db/shoortly.sqlite')
   }
 });
 
 db.knex.schema.hasTable('urls').then(function(exists) {
-  if(!exists) {
+  if (!exists) {
     db.knex.schema.createTable('urls', function (link) {
       link.string('url', 100);
       link.string('base_url', 100);
@@ -28,7 +28,7 @@ db.knex.schema.hasTable('urls').then(function(exists) {
 });
 
 db.knex.schema.hasTable('clicks').then(function(exists) {
-  if(!exists) {
+  if (!exists) {
     db.knex.schema.createTable('clicks', function (click) {
       click.string('url');
       click.dateTime('createdAt');
@@ -39,7 +39,7 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
 });
 
 db.knex.schema.hasTable('users').then(function(exists) {
-  if(!exists) {
+  if (!exists) {
     db.knex.schema.createTable('users', function (user) {
       user.string('username', 100).unique();
       user.string('password', 100);
