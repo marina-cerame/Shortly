@@ -90,9 +90,10 @@ app.post('/links', function(req, res) {
 
         var click = new Click({
           url: uri,
-          createdAt: new Date()
+          createdAt: new Date(),
+          link_id: link.attributes.code
         });
-        click.link = link;
+
         click.save().then(function () {
 
           link.save().then(function(newLink) {
@@ -100,6 +101,7 @@ app.post('/links', function(req, res) {
             util.addShortenedUrlRedirect(app, link);
             res.send(200, newLink);
           });
+
         });
       });
     }
