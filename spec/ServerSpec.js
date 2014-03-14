@@ -121,7 +121,6 @@ describe('', function() {
 
   it('Shortcode redirects to correct url', function(done) {
     this.timeout(5000);
-    // setTimeout(done, 3000);
     db.knex('urls')
       .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
       .then(function(urls) {
@@ -135,7 +134,6 @@ describe('', function() {
         };
 
         request(options, function(error, res, body) {
-          console.log('shortcode redirect', error, res)
           var currentLocation = res.request.href;
           expect(currentLocation).to.equal('http://www.roflzoo.com/');
           done();
