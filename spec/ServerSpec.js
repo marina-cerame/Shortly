@@ -1,11 +1,11 @@
 var expect = require('chai').expect;
 var request = require('request');
 
-var db = require('../models/config');
-var Users = require('../models/users');
-var User = require('../models/user');
-var Links = require('../models/links');
-var Link = require('../models/link');
+var db = require('../app/config');
+var Users = require('../app/collections/users');
+var User = require('../app/models/user');
+var Links = require('../app/collections/links');
+var Link = require('../app/models/link');
 
 describe('', function() {
   before(function() {

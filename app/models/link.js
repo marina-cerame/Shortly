@@ -1,4 +1,4 @@
-var db = require('./config');
+var db = require('../config');
 var Clicks = require('./click');
 
 var Link = db.Model.extend({
