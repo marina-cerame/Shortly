@@ -97,11 +97,7 @@ app.post('/links', function(req, res) {
 
           link.save().then(function(newLink) {
             Links.add(newLink);
-
-            app.get('/' + sha, function(req, res) {
-              return util.addShortenedUrlRedirect(app, link);
-            });
-
+            util.addShortenedUrlRedirect(app, link);
             res.send(200, newLink);
           });
         });
@@ -139,7 +135,7 @@ app.post('/login', function(req, res) {
 
 app.get('/logout', function(req, res) {
   req.session.destroy(function(){
-    // TOOD: global?
+    // TODO: global?
     global.userLoggedIn = false;
     res.redirect('/login');
   });

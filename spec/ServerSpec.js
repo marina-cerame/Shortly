@@ -10,7 +10,7 @@ var Link = require('../models/link');
 describe('', function() {
   before(function() {
     // log out currently signed in user
-    request('http://127.0.0.1:4568/logout', function(err, res, body) {
+    request('http://127.0.0.1:4568/logout', function(error, res, body) {
       console.log('logging out');
     });
 
@@ -18,7 +18,7 @@ describe('', function() {
     db.knex('urls')
       .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
       .del()
-      .catch(function(err) {
+      .catch(function(error) {
         throw {
           type: 'DatabaseError',
           message: 'Failed to create test setup data'
@@ -29,7 +29,7 @@ describe('', function() {
     db.knex('users')
       .where('username', '=', 'Phillip')
       .del()
-      .catch(function(err) {
+      .catch(function(error) {
         throw {
           type: 'DatabaseError',
           message: 'Failed to create test setup data'
@@ -121,7 +121,7 @@ describe('', function() {
 
   it('Shortcode redirects to correct url', function(done) {
     this.timeout(5000);
-    setTimeout(done, 3000);
+    // setTimeout(done, 3000);
     db.knex('urls')
       .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
       .then(function(urls) {
