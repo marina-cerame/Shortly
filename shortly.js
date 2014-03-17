@@ -12,8 +12,6 @@ var Click = require('./app/models/click');
 
 var app = express();
 
-global.userLoggedIn = false;
-
 app.configure(function() {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
@@ -137,8 +135,6 @@ app.post('/login', function(req, res) {
 
 app.get('/logout', function(req, res) {
   req.session.destroy(function(){
-    // TODO: global?
-    global.userLoggedIn = false;
     res.redirect('/login');
   });
 });
