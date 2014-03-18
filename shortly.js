@@ -22,39 +22,15 @@ app.configure(function() {
   app.use(express.session());
 });
 
-app.get('/', function(req, res, next) {
-  if (!util.isLoggedIn(req)) {
-    res.redirect('/login');
-  } else {
-    next();
-  }
-});
-
-app.get('/links', function(req, res, next) {
-  if (!util.isLoggedIn(req)) {
-    res.redirect('/login');
-  } else {
-    next();
-  }
-});
-
-app.get('/create', function(req, res, next) {
-  if (!util.isLoggedIn(req)) {
-    res.redirect('/login');
-  } else {
-    next();
-  }
-});
-
-app.get('/', function(req, res) {
+app.get('/', util.checkUser, function(req, res) {
   res.render('index');
 });
 
-app.get('/create', function(req, res) {
+app.get('/create', util.checkUser, function(req, res) {
   res.render('index');
 });
 
-app.get('/links', function(req, res) {
+app.get('/links', util.checkUser, function(req, res) {
   Links.fetch().then(function(links) {
     res.send(200, links.models);
   })
@@ -87,7 +63,6 @@ app.post('/links', function(req, res) {
         });
 
         var click = new Click({
-          url: uri,
           createdAt: new Date(),
           link_id: link.attributes.code
         });
@@ -170,3 +145,5 @@ app.post('/signup', function(req, res) {
 });
 
 app.listen(4568);
+
+console.log('App listening on port 4568');

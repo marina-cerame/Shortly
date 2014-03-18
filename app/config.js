@@ -30,7 +30,6 @@ db.knex.schema.hasTable('urls').then(function(exists) {
 db.knex.schema.hasTable('clicks').then(function(exists) {
   if (!exists) {
     db.knex.schema.createTable('clicks', function (click) {
-      click.string('url');
       click.dateTime('createdAt');
       click.string('link_id');
     }).then(function (table) {
