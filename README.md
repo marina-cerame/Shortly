@@ -12,15 +12,15 @@ working on both the server and the client to achieve these goals.
 This repo contains a functional URL shortener designed as a single page
 app. It's built in Backbone.js client side with a Node/Express-based server.
 
-Just like in shortener, this repo includes some basic server specs.
-Out of the box, all specs should pass. Ensure that as you make changes
-to your server, you update specs and keep them in sync with your code.
-
 Client side, the repo includes essential libraries like jQuery,
 underscore.js and backbone.js.
 
+This repo includes some basic server specs using Mocha. It is your job to
+make all of them pass, but feel free to write additional to guide yourself.
+With your server running, enter `mocha [ specfilename ]` to run the tests.
+
 Use nodemon so that the server automatically restarts when you make changes
-to your files, and use mocha to run the specs.
+to your files.
 
 ## Reference Material
 
@@ -38,11 +38,13 @@ to your files, and use mocha to run the specs.
 ## Your Goals
 
 Basic Requirements:
-- Design your app architecture:
+- Take a few minutes to design your app architecture:
   * [ ] What pages and routes do you want?
 
 - Hook up your app to a SQL database using bookshelf:
-  * [ ] Create the necessary tables: clicks and urls
+  * [ ] Create the necessary tables: urls and clicks
+  * [ ] The urls table needs columns: url, visits, base_url, code (the encrypted sha), title, and visits
+  * [ ] The clicks table needs columns: created\_at, and link\_id. This will be used later for stat visualization.
 
 - Build a simple authentication system:
   * [ ] Require users to log in to see shortened links
@@ -54,7 +56,7 @@ Basic Requirements:
 
 - Add a (backbone) router to the application:
   * [ ] Using HTML5 pushstate, keep the URL in the address bar in sync with what page the user is viewing.
-  * [ ] A user should be able to copy a url from the address bar, and then re-enter it into a browser to get back to the original page. Ensure you have a reliable strategy for handling deep-linked routes on the server.
+  * [ ] A user should be able to copy a url from the address bar, and then re-enter it into a browser to get back to the original page. Ensure you have a reliable strategy for handling [deep-linked](http://en.wikipedia.org/wiki/Deep_linking) routes on the server.
 
 - Switch to using Handlebars as your template engine:
   * [ ] Include all templates in your index.ejs
