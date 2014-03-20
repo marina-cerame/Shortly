@@ -173,4 +173,5 @@ app.post('/signup', function(req, res) {
     })
 });
 
+console.log('Shortly is listening on 4568');
 app.listen(4568);
