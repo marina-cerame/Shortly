@@ -24,39 +24,23 @@ app.configure(function() {
   app.use(express.session());
 });
 
-app.get('/', function(req, res, next) {
+var checkUser = function(req, res, next) {
   if (!util.isLoggedIn(req)) {
     res.redirect('/login');
   } else {
     next();
   }
-});
+};
 
-app.get('/links', function(req, res, next) {
-  if (!util.isLoggedIn(req)) {
-    res.redirect('/login');
-  } else {
-    next();
-  }
-});
-
-app.get('/create', function(req, res, next) {
-  if (!util.isLoggedIn(req)) {
-    res.redirect('/login');
-  } else {
-    next();
-  }
-});
-
-app.get('/', function(req, res) {
+app.get('/', checkUser, function(req, res) {
   res.render('index');
 });
 
-app.get('/create', function(req, res) {
+app.get('/create', checkUser, function(req, res) {
   res.render('index');
 });
 
-app.get('/links', function(req, res) {
+app.get('/links', checkUser, function(req, res) {
   Links.fetch().then(function(links) {
     res.send(200, links.models);
   })
