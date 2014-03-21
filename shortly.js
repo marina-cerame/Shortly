@@ -12,8 +12,6 @@ var Click = require('./app/models/click');
 
 var app = express();
 
-global.userLoggedIn = false;
-
 app.configure(function() {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
@@ -24,23 +22,15 @@ app.configure(function() {
   app.use(express.session());
 });
 
-var checkUser = function(req, res, next) {
-  if (!util.isLoggedIn(req)) {
-    res.redirect('/login');
-  } else {
-    next();
-  }
-};
-
-app.get('/', checkUser, function(req, res) {
+app.get('/', util.checkUser, function(req, res) {
   res.render('index');
 });
 
-app.get('/create', checkUser, function(req, res) {
+app.get('/create', util.checkUser, function(req, res) {
   res.render('index');
 });
 
-app.get('/links', checkUser, function(req, res) {
+app.get('/links', util.checkUser, function(req, res) {
   Links.fetch().then(function(links) {
     res.send(200, links.models);
   })
@@ -73,7 +63,6 @@ app.post('/links', function(req, res) {
         });
 
         var click = new Click({
-          url: uri,
           createdAt: new Date(),
           link_id: link.attributes.code
         });
@@ -121,8 +110,6 @@ app.post('/login', function(req, res) {
 
 app.get('/logout', function(req, res) {
   req.session.destroy(function(){
-    // TODO: global?
-    global.userLoggedIn = false;
     res.redirect('/login');
   });
 });
