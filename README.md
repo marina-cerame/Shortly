@@ -43,7 +43,7 @@ Basic Requirements:
 
 - Hook up your app to a SQL database using bookshelf:
   * [ ] Create the necessary tables: urls and clicks
-  * [ ] The urls table needs columns: url, visits, base_url, code (the encrypted sha), title, and visits
+  * [ ] The urls table needs columns: url, visits, base\_url, code (the encrypted sha), title, and visits
   * [ ] The clicks table needs columns: created\_at, and link\_id. This will be used later for stat visualization.
 
 - Build a simple authentication system:
