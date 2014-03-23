@@ -3,8 +3,10 @@ var util = require('./lib/utility');
 var partials = require('express-partials');
 
 var db = require('./app/config');
+/* START SOLUTION */
 var Users = require('./app/collections/users');
 var User = require('./app/models/user');
+/* END SOLUTION */
 var Links = require('./app/collections/links');
 var Link = require('./app/models/link');
 var Click = require('./app/models/click');
@@ -18,25 +20,27 @@ app.configure(function() {
   app.use(partials());
   app.use(express.bodyParser())
   app.use(express.static(__dirname + '/public'));
+  /* START SOLUTION */
   app.use(express.cookieParser('shhhh, very secret'));
   app.use(express.session());
+  /* END SOLUTION */
 });
 
-app.get('/', util.checkUser, function(req, res) {
+app.get('/', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
   res.render('index');
 });
 
-app.get('/create', util.checkUser, function(req, res) {
+app.get('/create', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
   res.render('index');
 });
 
-app.get('/links', util.checkUser, function(req, res) {
-  Links.fetch().then(function(links) {
+app.get('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
+  Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
   })
 });
 
-app.post('/links', function(req, res) {
+app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
   var uri = req.body.url;
 
   if (!util.isValidUrl(uri)) {
@@ -53,34 +57,23 @@ app.post('/links', function(req, res) {
           console.log('Error reading URL heading: ', err);
           return res.send(404);
         }
-        var sha = util.createSha(uri);
+
         var link = new Link({
           url: uri,
           title: title,
-          code: sha,
-          base_url: req.headers.origin,
-          visits: 0
+          base_url: req.headers.origin
         });
 
-        var click = new Click({
-          createdAt: new Date(),
-          link_id: link.attributes.code
-        });
-
-        click.save().then(function () {
-
-          link.save().then(function(newLink) {
-            Links.add(newLink);
-            util.addShortenedUrlRedirect(app, link);
-            res.send(200, newLink);
-          });
-
+        link.save().then(function(newLink) {
+          Links.add(newLink);
+          res.send(200, newLink);
         });
       });
     }
   });
 });
 
+/* START SOLUTION */
 app.get('/login', function(req, res) {
   res.render('login');
 });
@@ -95,9 +88,7 @@ app.post('/login', function(req, res) {
       if (!user) {
         res.redirect('/login');
       } else {
-        var foundUser = user.attributes;
-        var userPassword = foundUser.password;
-        util.comparePassword(password, userPassword, function(err, match) {
+        user.comparePassword(password, function(match) {
           if (match) {
             util.createSession(app, req, res, user);
           } else {
@@ -126,22 +117,43 @@ app.post('/signup', function(req, res) {
     .fetch()
     .then(function(user) {
       if (!user) {
-        util.hashPassword(password, function(hashedPassword) {
-          var newUser = new User({
-            username: username,
-            password: hashedPassword
-          });
-          newUser.save()
-            .then(function(newUser) {
-              util.createSession(app, req, res, newUser);
-              Users.add(newUser);
-            });
+        var newUser = new User({
+          username: username,
+          password: password
         });
+        newUser.save()
+          .then(function(newUser) {
+            util.createSession(app, req, res, newUser);
+            Users.add(newUser);
+          });
       } else {
         console.log('Account already exists');
-        res.redirect('/signup')
+        res.redirect('/signup');
       }
     })
+});
+/* END SOLUTION */
+
+app.get('/*', function(req, res) {
+  new Link({ code: req.params[0] }).fetch().then(function(link) {
+    if (!link) {
+      res.redirect('/');
+    } else {
+      var click = new Click({
+        link_id: link.get('id')
+      });
+
+      click.save().then(function() {
+        db.knex('urls')
+          .where('code', '=', link.get('code'))
+          .update({
+            visits: link.get('visits') + 1,
+          }).then(function() {
+            return res.redirect(link.get('url'));
+          });
+      });
+    }
+  });
 });
 
 console.log('Shortly is listening on 4568');
