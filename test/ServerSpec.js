@@ -8,14 +8,16 @@ var Links = require('../app/collections/links');
 var Link = require('../app/models/link');
 
 /************************************************************/
-// Swap the commenting on the following lines in order to
-// enable tests for authentication
+// Mocha doesn't have a way to designate pending before blocks.
+// Mimic the behavior of xit and xdescribe with xbeforeEach.
+// Swap the commented lines or remove the 'x' from beforeEach
+// when working on authentication tests.
 /************************************************************/
 /* START SOLUTION */
-var xBeforeEach = beforeEach;
+var xbeforeEach = beforeEach;
 /* ELSE
-//var xBeforeEach = beforeEach;
-var xBeforeEach = function(){};
+//var xbeforeEach = beforeEach;
+var xbeforeEach = function(){};
 END SOLUTION */
 /************************************************************/
 
@@ -24,9 +26,7 @@ describe('', function() {
 
   beforeEach(function() {
     // log out currently signed in user
-    request('http://127.0.0.1:4568/logout', function(error, res, body) {
-      // console.log('logging out');
-    });
+    request('http://127.0.0.1:4568/logout', function(error, res, body) {});
 
     // delete link for roflzoo from db so it can be created later for the test
     db.knex('urls')
@@ -44,10 +44,11 @@ describe('', function() {
       .where('username', '=', 'Svnh')
       .del()
       .catch(function(error) {
-        throw {
-          type: 'DatabaseError',
-          message: 'Failed to create test setup data'
-        };
+        // uncomment when writing authentication tests
+        // throw {
+        //   type: 'DatabaseError',
+        //   message: 'Failed to create test setup data'
+        // };
       });
 
     // delete user Phillip from db so it can be created later for the test
@@ -55,10 +56,11 @@ describe('', function() {
       .where('username', '=', 'Phillip')
       .del()
       .catch(function(error) {
-        throw {
-          type: 'DatabaseError',
-          message: 'Failed to create test setup data'
-        };
+        // uncomment when writing authentication tests
+        // throw {
+        //   type: 'DatabaseError',
+        //   message: 'Failed to create test setup data'
+        // };
       });
   });
 
@@ -66,7 +68,8 @@ describe('', function() {
 
     var requestWithSession = request.defaults({jar: true});
 
-    xBeforeEach(function(done){
+    xbeforeEach(function(done){
+      // create a user that we can then log-in with
       new User({
           'username': 'Phillip',
           'password': 'Phillip'
@@ -80,27 +83,10 @@ describe('', function() {
             'password': 'Phillip'
           }
         };
-        // login and save session info
+        // login via form and save session info
         requestWithSession(options, function(error, res, body) {
           done();
         });
-      });
-    });
-
-    it('Shortens links', function(done) {
-
-      var options = {
-        'method': 'POST',
-        'followAllRedirects': true,
-        'uri': 'http://127.0.0.1:4568/links',
-        'json': {
-          'url': 'http://www.roflzoo.com/'
-        }
-      };
-
-      requestWithSession(options, function(error, res, body) {
-        expect(res.body.url).to.equal('http://www.roflzoo.com/');
-        done();
       });
     });
 
@@ -119,12 +105,63 @@ describe('', function() {
       });
     });
 
+    describe('Shortening links:', function(){
+
+      var options = {
+        'method': 'POST',
+        'followAllRedirects': true,
+        'uri': 'http://127.0.0.1:4568/links',
+        'json': {
+          'url': 'http://www.roflzoo.com/'
+        }
+      };
+
+      it('Responds with the short code', function(done) {
+        requestWithSession(options, function(error, res, body) {
+          expect(res.body.url).to.equal('http://www.roflzoo.com/');
+          expect(res.body.code).to.not.be.null;
+          done();
+        });
+      });
+
+      it('New links create a database entry', function(done) {
+        requestWithSession(options, function(error, res, body) {
+          var foundUrl;
+          db.knex('urls')
+            .where('url', '=', 'http://www.roflzoo.com/')
+            .then(function(urls) {
+              if (urls['0'] && urls['0']['url']) {
+                foundUrl = urls['0']['url'];
+              }
+              expect(foundUrl).to.equal('http://www.roflzoo.com/');
+              done();
+            });
+        });
+      });
+
+      it('Fetches the link url title', function (done) {
+        requestWithSession(options, function(error, res, body) {
+          var foundTitle;
+          db.knex('urls')
+            .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
+            .then(function(urls) {
+              if (urls['0'] && urls['0']['title']) {
+                foundTitle = urls['0']['title'];
+              }
+              expect(foundTitle).to.equal('Rofl Zoo - Daily funny animal pictures');
+              done();
+            });
+        });
+      });
+
+    }); // 'Shortening links'
 
     describe('With previously saved urls:', function(){
 
       var link;
 
       beforeEach(function(done){
+        // save a link to the database
         link = new Link({
           url: 'http://www.roflzoo.com/',
           title: 'Rofl Zoo - Daily funny animal pictures',
@@ -133,34 +170,6 @@ describe('', function() {
         link.save().then(function(){
           done();
         });
-      });
-
-      it('New links create a database entry', function(done) {
-        var foundUrl;
-        db.knex('urls')
-          .where('url', '=', 'http://www.roflzoo.com/')
-          .then(function(urls) {
-            if (urls['0'] && urls['0']['url']) {
-              foundUrl = urls['0']['url'];
-            }
-            // TODO: why is there a timeout on fail?
-            expect(foundUrl).to.equal('http://www.roflzoo.com/');
-            done();
-          });
-      });
-
-      it('Fetches the link url title', function (done) {
-        var foundTitle;
-        db.knex('urls')
-          .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
-          .then(function(urls) {
-            if (urls['0'] && urls['0']['title']) {
-              foundTitle = urls['0']['title'];
-            }
-            // TODO: why is there a timeout on fail?
-            expect(foundTitle).to.equal('Rofl Zoo - Daily funny animal pictures');
-            done();
-          });
       });
 
       it('Returns the same shortened code', function(done) {
@@ -174,39 +183,40 @@ describe('', function() {
         };
 
         requestWithSession(options, function(error, res, body) {
-          var secondCode = res.body.code;
-          expect(secondCode).to.equal(link.get('code'));
+          var code = res.body.code;
+          expect(code).to.equal(link.get('code'));
           done();
         });
       });
 
-      describe('Link fetching:', function(){
+      it('Shortcode redirects to correct url', function(done) {
+        var options = {
+          'method': 'GET',
+          'uri': 'http://127.0.0.1:4568/' + link.get('code')
+        };
 
-        it('Shortcode redirects to correct url', function(done) {
-          var options = {
-            'method': 'GET',
-            'uri': 'http://127.0.0.1:4568/' + link.get('code'),
-            'timeout': 5000
-          };
-
-          requestWithSession(options, function(error, res, body) {
-            var currentLocation = res.request.href;
-            expect(currentLocation).to.equal('http://www.roflzoo.com/');
-            done();
-          });
-        });
-
-
-        it('Returns all of the links to display on the links page', function(done) {
-          requestWithSession('http://127.0.0.1:4568/links', function(error, res, body) {
-            expect(body).to.include('"title": "Rofl Zoo - Daily funny animal pictures"');
-            done();
-          });
+        requestWithSession(options, function(error, res, body) {
+          var currentLocation = res.request.href;
+          expect(currentLocation).to.equal('http://www.roflzoo.com/');
+          done();
         });
       });
 
-    });
-  });
+      it('Returns all of the links to display on the links page', function(done) {
+        var options = {
+          'method': 'GET',
+          'uri': 'http://127.0.0.1:4568/links'
+        };
+
+        requestWithSession(options, function(error, res, body) {
+          expect(body).to.include('"title": "Rofl Zoo - Daily funny animal pictures"');
+          done();
+        });
+      });
+
+    }); // 'With previously saved urls'
+
+  }); // 'Link creation'
 
   /* START SOLUTION */
   describe /* ELSE
@@ -233,7 +243,7 @@ describe('', function() {
       });
     });
 
-  });
+  }); // 'Priviledged Access'
 
   /* START SOLUTION */
   describe /* ELSE
@@ -283,7 +293,7 @@ describe('', function() {
       });
     });
 
-  });
+  }); // 'Account Creation'
 
   /* START SOLUTION */
   describe /* ELSE
@@ -332,6 +342,6 @@ describe('', function() {
       });
     });
 
-  });
+  }); // 'Account Login'
 
 });
