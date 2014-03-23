@@ -3,10 +3,8 @@ var util = require('./lib/utility');
 var partials = require('express-partials');
 
 var db = require('./app/config');
-/* START SOLUTION */
 var Users = require('./app/collections/users');
 var User = require('./app/models/user');
-/* END SOLUTION */
 var Links = require('./app/collections/links');
 var Link = require('./app/models/link');
 var Click = require('./app/models/click');
