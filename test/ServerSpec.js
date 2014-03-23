@@ -126,12 +126,11 @@ describe('', function() {
 
       it('New links create a database entry', function(done) {
         requestWithSession(options, function(error, res, body) {
-          var foundUrl;
           db.knex('urls')
             .where('url', '=', 'http://www.roflzoo.com/')
             .then(function(urls) {
               if (urls['0'] && urls['0']['url']) {
-                foundUrl = urls['0']['url'];
+                var foundUrl = urls['0']['url'];
               }
               expect(foundUrl).to.equal('http://www.roflzoo.com/');
               done();
@@ -141,12 +140,11 @@ describe('', function() {
 
       it('Fetches the link url title', function (done) {
         requestWithSession(options, function(error, res, body) {
-          var foundTitle;
           db.knex('urls')
             .where('title', '=', 'Rofl Zoo - Daily funny animal pictures')
             .then(function(urls) {
               if (urls['0'] && urls['0']['title']) {
-                foundTitle = urls['0']['title'];
+                var foundTitle = urls['0']['title'];
               }
               expect(foundTitle).to.equal('Rofl Zoo - Daily funny animal pictures');
               done();
