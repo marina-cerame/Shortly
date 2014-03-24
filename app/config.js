@@ -41,6 +41,10 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
   }
 });
 
+/************************************************************/
+// Add additional schema definitions below
+/************************************************************/
+
 /* START SOLUTION */
 db.knex.schema.hasTable('users').then(function(exists) {
   if (!exists) {

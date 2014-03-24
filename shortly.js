@@ -9,7 +9,6 @@ var Links = require('./app/collections/links');
 var Link = require('./app/models/link');
 var Click = require('./app/models/click');
 
-
 var app = express();
 
 app.configure(function() {
@@ -71,6 +70,10 @@ app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
   });
 });
 
+/************************************************************/
+// Write your authentication routes here
+/************************************************************/
+
 /* START SOLUTION */
 app.get('/login', function(req, res) {
   res.render('login');
@@ -131,6 +134,12 @@ app.post('/signup', function(req, res) {
     })
 });
 /* END SOLUTION */
+
+/************************************************************/
+// Handle the wildcard route last - if all other routes fail
+// assume the route is a short code and try and handle it here.
+// If the short-code doesn't exist, send the user to '/'
+/************************************************************/
 
 app.get('/*', function(req, res) {
   new Link({ code: req.params[0] }).fetch().then(function(link) {
