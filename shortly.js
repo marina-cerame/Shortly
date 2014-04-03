@@ -91,7 +91,7 @@ app.post('/login', function(req, res) {
       } else {
         user.comparePassword(password, function(match) {
           if (match) {
-            util.createSession(app, req, res, user);
+            util.createSession(req, res, user);
           } else {
             res.redirect('/login');
           }
@@ -124,7 +124,7 @@ app.post('/signup', function(req, res) {
         });
         newUser.save()
           .then(function(newUser) {
-            util.createSession(app, req, res, newUser);
+            util.createSession(req, res, newUser);
             Users.add(newUser);
           });
       } else {
