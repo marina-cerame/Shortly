@@ -1,4 +1,4 @@
-# Shortly
+# Shortly Express
 
 Get ready for full-stack app development with Shortly! Shortly is a URL shortener service similar to Bitly - but is only partially finished. Your goal is to build out an authentication system and other features that will enable users to have their own private set of shortened URLs.
 
@@ -35,7 +35,7 @@ Use nodemon so that the server automatically restarts when you make changes to y
 
 ### Basic Requirements:
 
-- Build a simple authentication system - from scratch:
+- Build a simple session-based server-side authentication system - from scratch:
   * [ ] Create a new table `users` with columns `username` and `password`. Consider how you will store this information securely. What models will you need and what behavior will they encapsulate?
   * [ ] Allow users to register for a new account, or to login - build pages for login and sign up, and add routes to process the form data using POST actions.
   * [ ] Add a `checkUser` helper to all server routes that require login, redirect the user to a login page as needed. Require users to log in to see shortened links and create new ones. Do NOT require the user to login when using a previously shortened link.
@@ -43,10 +43,10 @@ Use nodemon so that the server automatically restarts when you make changes to y
   * [ ] Don't forget to give the user a way to log out!
 
 ### Extra Credit:
-
-- Build a front-end authentication system:
-  * [ ] Handle all login and signup from backbone instead of relying on server-side redirects and routes.
-  * [ ] Convert your server routes into API endpoints. You will need to deliver meaningful errors on the server side, and handle them gracefully on the client side.
+ 
+- Now that you fully understand how to roll your own server-side session-based auth system, swap out the system you built for [Passport](http://passportjs.org/). 
+  * [ ] Use an OAuth provider strategy; login via your GitHub account.
+    * NOTE: Passport will conflict with any client-side auth system you've aleady implemented, so be ready to disable it. 
 
 - Add a (backbone) router to move the user from page to page:
   * [ ] Using HTML5 pushstate, keep the URL in the address bar in sync with what page the user is viewing.
@@ -57,11 +57,10 @@ Use nodemon so that the server automatically restarts when you make changes to y
 
 ### Nightmare Mode:
 
-#### Passport
-
-Passport is authentication middleware for Node.js.  
-  * [ ] Now that you fully understand the way a server-side auth system works,swap out your own system for [Passport](http://passportjs.org/). Use an OAuth provider strategy; login via your GitHub account.
-    * NOTE: Passport will conflict with any client-side auth system you've aleady implemented, so be ready to disable it. 
+- Build a front-end authentication system:
+  * [ ] Use an OAuth provider strategy; login via your GitHub account.
+  * [ ] Handle all login and signup from backbone instead of relying on server-side redirects and routes.
+  * [ ] Convert your server routes into API endpoints. You will need to deliver meaningful errors on the server side, and handle them gracefully on the client side.
 
 ### Other Challenges
 
