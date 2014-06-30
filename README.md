@@ -57,8 +57,11 @@ Use nodemon so that the server automatically restarts when you make changes to y
 
 ### Nightmare Mode:
 
-- Use Passport for authentication instead of your own:
-  * [ ] Swap out your own authentication system for Passport. Use an OAuth provider strategy; login via your GitHub account.
+#### Passport
+
+Passport is authentication middleware for Node.js.  
+  * [ ] Now that you fully understand the way a server-side auth system works,swap out your own system for [Passport](http://passportjs.org/). Use an OAuth provider strategy; login via your GitHub account.
+    * NOTE: Passport will conflict with any client-side auth system you've aleady implemented, so be ready to disable it. 
 
 ### Other Challenges
 
