@@ -13,6 +13,8 @@ You will need to think about how to approach authentication from both a user per
 
 This repo contains a functional URL shortener designed as a single page app. It's built using Backbone.js on the client with a Node/Express-based server. The server uses the Bookshelf.js ORM and EJS for templates.
 
+It uses [SQLite](http://www.sqlite.org/), a self-contained, __serverless__, zero-configuration, transactional SQL database engine.
+
 Client side, the repo includes essential libraries like jQuery, underscore.js and backbone.js. Templating on the client is handled via Handlebars.
 
 This repo includes some basic server specs using Mocha. It is your job to make all of them pass, but feel free to write additional tests to guide yourself. With your server running, enter `mocha [ specfilename ]` to run the tests.
