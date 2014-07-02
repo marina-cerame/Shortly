@@ -37,6 +37,7 @@ Use nodemon so that the server automatically restarts when you make changes to y
 
 ### Basic Requirements:
 
+- First, make the tests pass.  This will familiarize you with the app as it is built out (and common ways that specs and running apps can diverge).
 - Build a simple session-based server-side authentication system - from scratch:
   * [ ] Create a new table `users` with columns `username` and `password`. Consider how you will store this information securely. What models will you need and what behavior will they encapsulate?
   * [ ] Allow users to register for a new account, or to login - build pages for login and sign up, and add routes to process the form data using POST actions.
