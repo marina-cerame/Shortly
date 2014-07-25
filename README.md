@@ -17,9 +17,9 @@ It uses [SQLite](http://www.sqlite.org/), a self-contained, __serverless__, zero
 
 Client side, the repo includes essential libraries like jQuery, underscore.js and backbone.js. Templating on the client is handled via Handlebars.
 
-This repo includes some basic server specs using Mocha. It is your job to make all of them pass, but feel free to write additional tests to guide yourself. With your server running, enter `mocha [ specfilename ]` to run the tests.
+This repo includes some basic server specs using Mocha. It is your job to make all of them pass, but feel free to write additional tests to guide yourself. Enter `npm test` to run the tests.
 
-Use nodemon so that the server automatically restarts when you make changes to your files.
+Use nodemon so that the server automatically restarts when you make changes to your files. To see an example, use `npm start`, but see if you can improve on this.
 
 ## Reference Material
 
