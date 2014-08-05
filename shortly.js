@@ -45,7 +45,7 @@ app.get('/create', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
 app.get('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
-  })
+  });
 });
 
 app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
@@ -106,7 +106,7 @@ app.post('/login', function(req, res) {
           } else {
             res.redirect('/login');
           }
-        })
+        });
       }
   });
 });
@@ -142,7 +142,7 @@ app.post('/signup', function(req, res) {
         console.log('Account already exists');
         res.redirect('/signup');
       }
-    })
+    });
 });
 /* END SOLUTION */
 

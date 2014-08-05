@@ -10,13 +10,11 @@ var Link = require('../app/models/link');
 /************************************************************/
 // Mocha doesn't have a way to designate pending before blocks.
 // Mimic the behavior of xit and xdescribe with xbeforeEach.
-// Swap the commented lines or remove the 'x' from beforeEach
-// when working on authentication tests.
+// Remove the 'x' from beforeEach block when working on
+// authentication tests.
 /************************************************************/
 /* START SOLUTION */
-var xbeforeEach = beforeEach;
 /* ELSE
-//var xbeforeEach = beforeEach;
 var xbeforeEach = function(){};
 END SOLUTION */
 /************************************************************/
@@ -68,7 +66,8 @@ describe('', function() {
 
     var requestWithSession = request.defaults({jar: true});
 
-    xbeforeEach(function(done){
+    /* START SOLUTION */ beforeEach(function(done){
+    /* ELSE xbeforeEach(function(done){ END SOLUTION */
       // create a user that we can then log-in with
       new User({
           'username': 'Phillip',
