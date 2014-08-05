@@ -3,8 +3,8 @@ var util = require('./lib/utility');
 var partials = require('express-partials');
 /* START SOLUTION */
 // express 4 deprecates use of bodyParser without specifying json or urlencoded
-var bodyParser = require('body-parser');
 /* END SOLUTION */
+var bodyParser = require('body-parser');
 /* START SOLUTION */
 var session = require('express-session');
 /* END SOLUTION */

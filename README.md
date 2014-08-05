@@ -41,12 +41,14 @@ Use nodemon so that the server automatically restarts when you make changes to y
 ### Basic Requirements:
 
 - Build a simple session-based server-side authentication system - from scratch:
+  * [ ] Make sure that you pass the tests marked as pending (`xdescribe`) in the spec file.
+    * [ ] Add tests for your authentication if necessary.
+    * Use the tests to guide you through the other requirements.
   * [ ] Create a new table `users` with columns `username` and `password`. Consider how you will store this information securely. What models will you need and what behavior will they encapsulate?
   * [ ] Allow users to register for a new account, or to login - build pages for login and sign up, and add routes to process the form data using POST actions.
   * [ ] Add a `checkUser` helper to all server routes that require login, redirect the user to a login page as needed. Require users to log in to see shortened links and create new ones. Do NOT require the user to login when using a previously shortened link.
   * [ ] Enable sessions so that the user does not need to keep logging in when reloading the page.
   * [ ] Don't forget to give the user a way to log out!
-  * [ ] __Add tests__ for your authentication.
 
 ### Extra Credit:
 

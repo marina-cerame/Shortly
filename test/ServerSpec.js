@@ -66,8 +66,9 @@ describe('', function() {
 
     var requestWithSession = request.defaults({jar: true});
 
-    /* START SOLUTION */ beforeEach(function(done){
-    /* ELSE xbeforeEach(function(done){ END SOLUTION */
+    /* START SOLUTION */
+    beforeEach(function(done){ /* ELSE
+    xbeforeEach(function(done){ END SOLUTION */
       // create a user that we can then log-in with
       new User({
           'username': 'Phillip',
