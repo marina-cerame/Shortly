@@ -100,7 +100,8 @@ describe('', function() {
       };
 
       requestWithSession(options, function(error, res, body) {
-        expect(body).to.equal('Not Found');
+        // res comes from the request module, and may not follow express conventions
+        expect(res.statusCode).to.equal(404);
         done();
       });
     });
@@ -207,8 +208,8 @@ describe('', function() {
         };
 
         requestWithSession(options, function(error, res, body) {
-          expect(body).to.include('"title": "Rofl Zoo - Daily funny animal pictures"');
-          expect(body).to.include('"code": "' + link.get('code') + '"');
+          expect(body).to.include('"title":"Rofl Zoo - Daily funny animal pictures"');
+          expect(body).to.include('"code":"' + link.get('code') + '"');
           done();
         });
       });
