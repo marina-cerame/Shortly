@@ -15,7 +15,9 @@ This repo contains a functional URL shortener designed as a single page app. It'
 
 It uses [SQLite](http://www.sqlite.org/), a self-contained, __serverless__, zero-configuration, transactional SQL database engine.
 
-Client side, the repo includes essential libraries like jQuery, underscore.js and backbone.js. Templating on the client is handled via Handlebars.
+Server side, the repo uses express 4. There are a few key differences between express 3 and 4, foremost that middleware is no longer included in the express module, but must be installed separately.
+
+Client side, the repo includes libraries like jQuery, underscore.js and backbone.js. Templating on the client is handled via Handlebars.
 
 This repo includes some basic server specs using Mocha. It is your job to make all of them pass, but feel free to write additional tests to guide yourself. Enter `npm test` to run the tests.
 
@@ -23,6 +25,7 @@ Use nodemon so that the server automatically restarts when you make changes to y
 
 ## Reference Material
 
+* [Express 4 API](http://expressjs.com/4x/api.html)
 * [Express Authentication and Encryption](http://www.9bitstudios.com/2013/09/express-js-authentication/)
 * [Sessions and Security](http://guides.rubyonrails.org/security.html) - this is a Rails resource, but it's a really good explanation.
 * [Bookshelf.js ORM](http://bookshelfjs.org/)
@@ -37,9 +40,10 @@ Use nodemon so that the server automatically restarts when you make changes to y
 
 ### Basic Requirements:
 
-- First, make the tests pass. In a real application, as features are built out and APIs updated, It's not uncommon for specs and running apps to diverge. When this happens specs fail even though the app is working as intended. Many of the specs in this repo test existing functionality and have diverged from the app --they are failing even though the server is working as designed. 
-  - [ ] Update the failing specs (for the already implemented portions of the app) so that they actually test the current implementation.
 - Build a simple session-based server-side authentication system - from scratch:
+  * [ ] Make sure that you pass the tests marked as pending (`xdescribe`) in the spec file.
+    * [ ] Add tests for your authentication if necessary.
+    * Use the tests to guide you through the other requirements.
   * [ ] Create a new table `users` with columns `username` and `password`. Consider how you will store this information securely. What models will you need and what behavior will they encapsulate?
   * [ ] Allow users to register for a new account, or to login - build pages for login and sign up, and add routes to process the form data using POST actions.
   * [ ] Add a `checkUser` helper to all server routes that require login, redirect the user to a login page as needed. Require users to log in to see shortened links and create new ones. Do NOT require the user to login when using a previously shortened link.
@@ -47,7 +51,7 @@ Use nodemon so that the server automatically restarts when you make changes to y
   * [ ] Don't forget to give the user a way to log out!
 
 ### Extra Credit:
- 
+
 - Now that you fully understand how to roll your own server-side session-based auth system, swap out the system you built for [Passport](http://passportjs.org/). 
   * [ ] Use an OAuth provider strategy; login via your GitHub account.
     * NOTE: Passport will conflict with any client-side auth system you've aleady implemented, so be ready to disable it. 

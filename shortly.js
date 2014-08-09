@@ -1,6 +1,10 @@
 var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
+var bodyParser = require('body-parser');
+/* START SOLUTION */
+var session = require('express-session');
+/* END SOLUTION */
 
 var db = require('./app/config');
 var Users = require('./app/collections/users');
@@ -11,17 +15,21 @@ var Click = require('./app/models/click');
 
 var app = express();
 
-app.configure(function() {
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(partials());
-  app.use(express.bodyParser())
-  app.use(express.static(__dirname + '/public'));
-  /* START SOLUTION */
-  app.use(express.cookieParser('shhhh, very secret'));
-  app.use(express.session());
-  /* END SOLUTION */
-});
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.use(partials());
+// Parse JSON (uniform resource locators)
+app.use(bodyParser.json());
+// Parse forms (signup/login)
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public'));
+/* START SOLUTION */
+app.use(session({
+  secret: 'shhh, it\'s a secret',
+  resave: false,
+  saveUninitialized: true
+}));
+/* END SOLUTION */
 
 app.get('/', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
   res.render('index');
@@ -34,7 +42,7 @@ app.get('/create', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
 app.get('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
-  })
+  });
 });
 
 app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
@@ -95,7 +103,7 @@ app.post('/login', function(req, res) {
           } else {
             res.redirect('/login');
           }
-        })
+        });
       }
   });
 });
@@ -131,7 +139,7 @@ app.post('/signup', function(req, res) {
         console.log('Account already exists');
         res.redirect('/signup');
       }
-    })
+    });
 });
 /* END SOLUTION */
 
