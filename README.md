@@ -50,11 +50,15 @@ Use nodemon so that the server automatically restarts when you make changes to y
   * [ ] Enable sessions so that the user does not need to keep logging in when reloading the page.
   * [ ] Don't forget to give the user a way to log out!
 
+### Example:
+
+![Project Demo Image](./example.gif)
+
 ### Extra Credit:
 
-- Now that you fully understand how to roll your own server-side session-based auth system, swap out the system you built for [Passport](http://passportjs.org/). 
+- Now that you fully understand how to roll your own server-side session-based auth system, swap out the system you built for [Passport](http://passportjs.org/).
   * [ ] Use an OAuth provider strategy; login via your GitHub account.
-    * NOTE: Passport will conflict with any client-side auth system you've aleady implemented, so be ready to disable it. 
+    * NOTE: Passport will conflict with any client-side auth system you've aleady implemented, so be ready to disable it.
 
 - Add a (backbone) router to move the user from page to page:
   * [ ] Using HTML5 pushstate, keep the URL in the address bar in sync with what page the user is viewing.
