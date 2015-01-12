@@ -52,7 +52,7 @@ Use nodemon so that the server automatically restarts when you make changes to y
 
 ### Example:
 
-![Project Demo Image](./example.gif)
+![Project Demo Image](https://cloud.githubusercontent.com/assets/15180/5589513/5fbb5070-90d5-11e4-8333-eb45c3b84048.gif)
 
 ### Extra Credit:
 
