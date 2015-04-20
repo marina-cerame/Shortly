@@ -11,17 +11,17 @@ You will need to think about how to approach authentication from both a user per
 
 ## What's in this Repo
 
-This repo contains a functional URL shortener designed as a single page app. It's built using Backbone.js on the client with a Node/Express-based server. The server uses the Bookshelf.js ORM and EJS for templates.
+This repo contains a functional URL shortener designed as a single page app. It's built using [Backbone.js](http://backbonejs.org/) on the client with a Node/Express-based server. The server uses the [Bookshelf.js ORM](http://bookshelfjs.org/) and [EJS](http://www.embeddedjs.com/) for templates.
 
 It uses [SQLite](http://www.sqlite.org/), a self-contained, __serverless__, zero-configuration, transactional SQL database engine.
 
-Server side, the repo uses express 4. There are a few key differences between express 3 and 4, foremost that middleware is no longer included in the express module, but must be installed separately.
+Server side, the repo uses [express 4](http://expressjs.com/). There are a few key differences between express 3 and 4, foremost that middleware is no longer included in the express module, but must be installed separately.
 
-Client side, the repo includes libraries like jQuery, underscore.js and backbone.js. Templating on the client is handled via Handlebars.
+Client side, the repo includes libraries like [jQuery](https://jquery.com/), [underscore.js](http://underscorejs.org/) and [Backbone.js](http://backbonejs.org). Templating on the client is handled via [Handlebars](http://handlebarsjs.com/).
 
-This repo includes some basic server specs using Mocha. It is your job to make all of them pass, but feel free to write additional tests to guide yourself. Enter `npm test` to run the tests.
+This repo includes some basic server specs using [Mocha](http://mochajs.org/). It is your job to make all of them pass, but feel free to write additional tests to guide yourself. Enter `npm test` to run the tests.
 
-Use nodemon so that the server automatically restarts when you make changes to your files. To see an example, use `npm start`, but see if you can improve on this.
+Use [nodemon](http://nodemon.io/) so that the server automatically restarts when you make changes to your files. To see an example, use `npm start`, but see if you can improve on this.
 
 ## Reference Material
 
@@ -57,10 +57,10 @@ Use nodemon so that the server automatically restarts when you make changes to y
 ### Extra Credit:
 
 - Now that you fully understand how to roll your own server-side session-based auth system, swap out the system you built for [Passport](http://passportjs.org/).
-  * [ ] Use an OAuth provider strategy; login via your GitHub account.
+  * [ ] Use an [OAuth](https://en.wikipedia.org/wiki/OAuth) provider strategy; login via your GitHub account.
     * NOTE: Passport will conflict with any client-side auth system you've aleady implemented, so be ready to disable it.
 
-- Add a (backbone) router to move the user from page to page:
+- Add a (Backbone) router to move the user from page to page:
   * [ ] Using HTML5 pushstate, keep the URL in the address bar in sync with what page the user is viewing.
   * [ ] A user should be able to copy a url from the address bar, and then re-enter it into a browser to get back to the original page. Ensure you have a reliable strategy for handling [deep-linked](http://en.wikipedia.org/wiki/Deep_linking) routes on the server.
 
@@ -86,11 +86,11 @@ The following challenges are not core to the sprint but if you have time you can
   * [ ] Add additional models, routes, views, templates as needed.
 
 - Add user-specific stats:
-  * [ ] Modify the data schema to support different codes for the same url - so each user can have their own stats for a given url
-  * [ ] Change the stats page so it displays the user's clicks along with a total of all clicks in the database for the same url
-  * [ ] Visualize your stats using D3
+  * [ ] Modify the data schema to support different codes for the same url - so each user can have their own stats for a given url.
+  * [ ] Change the stats page so it displays the user's clicks along with a total of all clicks in the database for the same url.
+  * [ ] Visualize your stats using [D3](http://d3js.org/).
 
 - Don't use two different templating systems:
   * [ ] Switch to using Handlebars as your template engine on both client and server.
-  * [ ] Write a script that precompiles your templates on the server and loads them in the client using a single script tag
-  * [ ] Stop using ejs entirely
+  * [ ] Write a script that precompiles your templates on the server and loads them in the client using a single script tag.
+  * [ ] Stop using EJS entirely.
