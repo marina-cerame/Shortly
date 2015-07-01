@@ -12,5 +12,5 @@ deployment:
   master:
     branch: master
     commands:
-      - ../scripts/circle-ci/deploy/checkout-latest-tag.sh
+      # - ../scripts/circle-ci/deploy/checkout-latest-tag.sh
       - ../scripts/circle-ci/deploy/publish-to-hackreactor.sh
