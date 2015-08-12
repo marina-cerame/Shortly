@@ -38,7 +38,7 @@ Use [nodemon](http://nodemon.io/) so that the server automatically restarts when
 
 ## Your Goals
 
-### Basic Requirements:
+### Bare Minimum Requirements
 
 - Build a simple session-based server-side authentication system - from scratch:
   * [ ] Make sure that you pass the tests marked as pending (`xdescribe`) in the spec file.
@@ -54,7 +54,7 @@ Use [nodemon](http://nodemon.io/) so that the server automatically restarts when
 
 ![Project Demo Image](https://cloud.githubusercontent.com/assets/15180/5589513/5fbb5070-90d5-11e4-8333-eb45c3b84048.gif)
 
-### Extra Credit:
+### Advanced
 
 - Now that you fully understand how to roll your own server-side session-based auth system, swap out the system you built for [Passport](http://passportjs.org/).
   * [ ] Use an [OAuth](https://en.wikipedia.org/wiki/OAuth) provider strategy; login via your GitHub account.
