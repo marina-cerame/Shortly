@@ -63,14 +63,12 @@ app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
           return res.send(404);
         }
 
-        var link = new Link({
+        Links.create({
           url: uri,
           title: title,
           base_url: req.headers.origin
-        });
-
-        link.save().then(function(newLink) {
-          Links.add(newLink);
+        })
+        .then(function(newLink) {
           res.send(200, newLink);
         });
       });
@@ -97,6 +95,15 @@ app.post('/login', function(req, res) {
       if (!user) {
         res.redirect('/login');
       } else {
+        // BASIC VERSION
+        // bcrypt.compare(password, user.get('password'), function(err, match) {
+        //   if (match) {
+        //     util.createSession(req, res, user);
+        //   } else {
+        //     res.redirect('/login');
+        //   }
+        // });
+        // ADVANCED VERSION -- see user model
         user.comparePassword(password, function(match) {
           if (match) {
             util.createSession(req, res, user);
@@ -126,6 +133,16 @@ app.post('/signup', function(req, res) {
     .fetch()
     .then(function(user) {
       if (!user) {
+        // BASIC VERSION
+        // bcrypt.hash(password, null, null, function(err, hash) {
+        //   Users.create({
+        //     username: username,
+        //     password: hash
+        //   }).then(function(user) {
+        //       util.createSession(req, res, user);
+        //   });
+        // });
+        // ADVANCED VERSION -- see user model
         var newUser = new User({
           username: username,
           password: password
@@ -133,7 +150,6 @@ app.post('/signup', function(req, res) {
         newUser.save()
           .then(function(newUser) {
             util.createSession(req, res, newUser);
-            Users.add(newUser);
           });
       } else {
         console.log('Account already exists');
@@ -159,13 +175,10 @@ app.get('/*', function(req, res) {
       });
 
       click.save().then(function() {
-        db.knex('urls')
-          .where('code', '=', link.get('code'))
-          .update({
-            visits: link.get('visits') + 1,
-          }).then(function() {
-            return res.redirect(link.get('url'));
-          });
+        link.set('visits', link.get('visits')+1);
+        link.save().then(function() {
+          return res.redirect(link.get('url'));
+        });
       });
     }
   });
