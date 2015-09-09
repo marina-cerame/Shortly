@@ -1,5 +1,5 @@
 node_modules
-*.sqlite
+db/*.sqlite
 *.DS_Store
 
 # Floobits
