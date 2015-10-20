@@ -13,10 +13,7 @@ var Link = require('../app/models/link');
 // Remove the 'x' from beforeEach block when working on
 // authentication tests.
 /************************************************************/
-/* START SOLUTION */
-/* ELSE
 var xbeforeEach = function(){};
-END SOLUTION */
 /************************************************************/
 
 
@@ -67,8 +64,9 @@ describe('', function() {
     var requestWithSession = request.defaults({jar: true});
 
     /* START SOLUTION */
-    beforeEach(function(done){ /* ELSE
-    xbeforeEach(function(done){ END SOLUTION */
+    beforeEach
+    /* ELSE
+    xbeforeEach END SOLUTION */(function(done){
       // create a user that we can then log-in with
       new User({
           'username': 'Phillip',
