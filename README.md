@@ -50,11 +50,13 @@ Use [nodemon](http://nodemon.io/) so that the server automatically restarts when
   * [ ] Enable sessions so that the user does not need to keep logging in when reloading the page.
   * [ ] Don't forget to give the user a way to log out!
 
-### Example:
+### Example
 
 ![Project Demo Image](https://cloud.githubusercontent.com/assets/15180/5589513/5fbb5070-90d5-11e4-8333-eb45c3b84048.gif)
 
-### Advanced
+### Advanced Content
+
+Our advanced content is intended to throw you in over your head, requiring you to solve problems with very little support or oversight, much like you would as a mid or senior level engineer.
 
 - Now that you fully understand how to roll your own server-side session-based auth system, swap out the system you built for [Passport](http://passportjs.org/).
   * [ ] Use an [OAuth](https://en.wikipedia.org/wiki/OAuth) provider strategy; login via your GitHub account.
@@ -67,7 +69,7 @@ Use [nodemon](http://nodemon.io/) so that the server automatically restarts when
 - Add error messages:
   * [ ] Let your users know when they've entered incorrect credentials or fail to properly register for a user account.
 
-### Nightmare Mode:
+### Nightmare Mode
 
 - Build a front-end authentication system:
   * [ ] Use an OAuth provider strategy; login via your GitHub account.
