@@ -66,7 +66,7 @@ app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
         Links.create({
           url: uri,
           title: title,
-          base_url: req.headers.origin
+          baseUrl: req.headers.origin
         })
         .then(function(newLink) {
           res.send(200, newLink);
@@ -112,11 +112,11 @@ app.post('/login', function(req, res) {
           }
         });
       }
-  });
+    });
 });
 
 app.get('/logout', function(req, res) {
-  req.session.destroy(function(){
+  req.session.destroy(function() {
     res.redirect('/login');
   });
 });
@@ -171,11 +171,11 @@ app.get('/*', function(req, res) {
       res.redirect('/');
     } else {
       var click = new Click({
-        link_id: link.get('id')
+        linkId: link.get('id')
       });
 
       click.save().then(function() {
-        link.set('visits', link.get('visits')+1);
+        link.set('visits', link.get('visits') + 1);
         link.save().then(function() {
           return res.redirect(link.get('url'));
         });
