@@ -30,8 +30,8 @@
     "sqlite3": "~3.1.1"
   },
   "devDependencies": {
-    "chai": "^1.9.0",
+    "chai": "^3.5.0",
     "eslint-config-hackreactor": "git://github.com/hackreactor-labs/eslint-config-hackreactor",
-    "mocha": "^1.17.1"
+    "mocha": "^2.4.5"
   }
 }
