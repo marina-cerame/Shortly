@@ -50,7 +50,7 @@ app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
 
   if (!util.isValidUrl(uri)) {
     console.log('Not a valid url: ', uri);
-    return res.send(404);
+    return res.sendStatus(404);
   }
 
   new Link({ url: uri }).fetch().then(function(found) {
@@ -60,7 +60,7 @@ app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
       util.getUrlTitle(uri, function(err, title) {
         if (err) {
           console.log('Error reading URL heading: ', err);
-          return res.send(404);
+          return res.sendStatus(404);
         }
 
         Links.create({
