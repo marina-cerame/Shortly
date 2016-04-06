@@ -41,7 +41,7 @@ app.get('/create', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
 
 app.get('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
   Links.reset().fetch().then(function(links) {
-    res.send(200, links.models);
+    res.status(200).send(links.models);
   });
 });
 
@@ -50,17 +50,17 @@ app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
 
   if (!util.isValidUrl(uri)) {
     console.log('Not a valid url: ', uri);
-    return res.send(404);
+    return res.sendStatus(404);
   }
 
   new Link({ url: uri }).fetch().then(function(found) {
     if (found) {
-      res.send(200, found.attributes);
+      res.status(200).send(found.attributes);
     } else {
       util.getUrlTitle(uri, function(err, title) {
         if (err) {
           console.log('Error reading URL heading: ', err);
-          return res.send(404);
+          return res.sendStatus(404);
         }
 
         Links.create({
@@ -69,7 +69,7 @@ app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
           baseUrl: req.headers.origin
         })
         .then(function(newLink) {
-          res.send(200, newLink);
+          res.status(200).send(newLink);
         });
       });
     }
