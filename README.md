@@ -32,7 +32,7 @@ Use [nodemon](http://nodemon.io/) so that the server automatically restarts when
 * [Knex Queries for Bookshelf](http://knexjs.org/)
 * [Handlebars](http://handlebarsjs.com/)
 * [Beginner's guide to REST](http://net.tutsplus.com/tutorials/other/a-beginners-introduction-to-http-and-rest/)
-* [REST and RESTful responses](http://pixelhandler.com/blog/2012/02/09/develop-a-restful-api-using-node-js-with-express-and-mongoose/)
+* [REST and RESTful responses](https://pixelhandler.com/posts/develop-a-restful-api-using-nodejs-with-express-and-mongoose)
 * [HTML5 Pushstate](http://badassjs.com/post/840846392/location-hash-is-dead-long-live-html5-pushstate)
 * [Backbone Router](http://backbonejs.org/#Router)
 
