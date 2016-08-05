@@ -50,6 +50,10 @@ Use [nodemon](http://nodemon.io/) so that the server automatically restarts when
   * [ ] Enable sessions so that the user does not need to keep logging in when reloading the page.
   * [ ] Don't forget to give the user a way to log out!
 
+#### Tests
+
+- [ ] Write at least 3 new meaningful tests inside of `test/ServerSpec.js`
+
 ### Example
 
 ![Project Demo Image](https://cloud.githubusercontent.com/assets/15180/5589513/5fbb5070-90d5-11e4-8333-eb45c3b84048.gif)
