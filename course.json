@@ -2,13 +2,14 @@
   "name": "Shortly Express",
   "description": "Learn database migration, authentication, and the widely popular ExpressJS framework while working on a url shortener Short.ly.",
 
-  "syllabus": [
-
-    { "title": "Shortly Express Repository", "type": "download", "id": "exercise", "folder": "code", "transform": ["problemify-export"] }
-
-  ],
-
   "phases": {
+
+    "Code": [
+
+      { "title": "Shortly Express Repository", "type": "download", "id": "exercise", "folder": "code", "transform": ["problemify-export"] }
+
+    ],
+
 
     "Sprint Solution": [
 
