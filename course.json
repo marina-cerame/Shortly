@@ -6,7 +6,7 @@
 
     "Code": [
 
-      { "title": "Shortly Express Repository", "type": "download", "id": "exercise", "folder": "code", "transform": ["problemify-export"] }
+      { "title": "Shortly Express Repository", "type": "download", "postTransform": ["add-init-script"], "id": "exercise", "folder": "code", "transform": ["problemify-export"] }
 
     ],
 
