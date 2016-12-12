@@ -79,8 +79,8 @@ app.post('/links', function(req, res) {
 /************************************************************/
 
 app.post('/signup', (req, res) => {
-  var username = req.body.username;
-  var password = req.body.password;
+  let username = req.body.username;
+  let password = req.body.password;
 
   new User({ username: username, password: password }).fetch().then(function(found) {
     if (found) {
@@ -94,6 +94,14 @@ app.post('/signup', (req, res) => {
   }).then( () => {
     res.status(201).render('login');
   });
+});
+
+app.post('/login', (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+
+  res.status(200).send();
+
 });
 
 /************************************************************/
