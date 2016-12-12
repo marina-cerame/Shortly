@@ -2,9 +2,6 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
-/* START SOLUTION */
-var session = require('express-session');
-/* END SOLUTION */
 
 var db = require('./app/config');
 var Users = require('./app/collections/users');
@@ -23,29 +20,22 @@ app.use(bodyParser.json());
 // Parse forms (signup/login)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
-/* START SOLUTION */
-app.use(session({
-  secret: 'shhh, it\'s a secret',
-  resave: false,
-  saveUninitialized: true
-}));
-/* END SOLUTION */
 
-app.get('/', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
+app.get('/', function(req, res) {
   res.render('index');
 });
 
-app.get('/create', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
+app.get('/create', function(req, res) {
   res.render('index');
 });
 
-app.get('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
+app.get('/links', function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.status(200).send(links.models);
   });
 });
 
-app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */function(req, res) {
+app.post('/links', function(req, res) {
   var uri = req.body.url;
 
   if (!util.isValidUrl(uri)) {
@@ -80,84 +70,7 @@ app.post('/links', /* START SOLUTION */util.checkUser, /* END SOLUTION */functio
 // Write your authentication routes here
 /************************************************************/
 
-/* START SOLUTION */
-app.get('/login', function(req, res) {
-  res.render('login');
-});
-
-app.post('/login', function(req, res) {
-  var username = req.body.username;
-  var password = req.body.password;
-
-  new User({ username: username })
-    .fetch()
-    .then(function(user) {
-      if (!user) {
-        res.redirect('/login');
-      } else {
-        // BASIC VERSION
-        // bcrypt.compare(password, user.get('password'), function(err, match) {
-        //   if (match) {
-        //     util.createSession(req, res, user);
-        //   } else {
-        //     res.redirect('/login');
-        //   }
-        // });
-        // ADVANCED VERSION -- see user model
-        user.comparePassword(password, function(match) {
-          if (match) {
-            util.createSession(req, res, user);
-          } else {
-            res.redirect('/login');
-          }
-        });
-      }
-    });
-});
-
-app.get('/logout', function(req, res) {
-  req.session.destroy(function() {
-    res.redirect('/login');
-  });
-});
-
-app.get('/signup', function(req, res) {
-  res.render('signup');
-});
-
-app.post('/signup', function(req, res) {
-  var username = req.body.username;
-  var password = req.body.password;
-
-  new User({ username: username })
-    .fetch()
-    .then(function(user) {
-      if (!user) {
-        // BASIC VERSION
-        // bcrypt.hash(password, null, null, function(err, hash) {
-        //   Users.create({
-        //     username: username,
-        //     password: hash
-        //   }).then(function(user) {
-        //       util.createSession(req, res, user);
-        //   });
-        // });
-        // ADVANCED VERSION -- see user model
-        var newUser = new User({
-          username: username,
-          password: password
-        });
-        newUser.save()
-          .then(function(newUser) {
-            util.createSession(req, res, newUser);
-          });
-      } else {
-        console.log('Account already exists');
-        res.redirect('/signup');
-      }
-    });
-});
-/* END SOLUTION */
+//code here
 
 /************************************************************/
 // Handle the wildcard route last - if all other routes fail
