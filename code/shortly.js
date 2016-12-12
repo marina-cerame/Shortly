@@ -83,6 +83,7 @@ app.post('/signup', (req, res) => {
   let password = req.body.password;
 
   new User({ username: username, password: password }).fetch().then(function(found) {
+    console.log(found);
     if (found) {
       res.status(200).render('login');
     } else {
