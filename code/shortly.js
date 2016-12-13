@@ -93,7 +93,8 @@ app.post('/signup', (req, res) => {
         password: password
       })
       .then( () => {
-        console.log(req.session);
+        let sess = req.session;
+        sess.username = username;
         res.redirect('/');
       });
     }
@@ -103,8 +104,15 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
+  let foundUser = Users.findWhere({username: username, password: password});
 
-  res.status(200).redirect('/');
+  if (foundUser) {
+    res.status(200).redirect('/');
+  } else {
+    res.redirect('/login');
+  }
+
+
 
 });
 

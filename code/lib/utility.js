@@ -1,7 +1,7 @@
 var request = require('request');
 var express = require('express');
-var db = require('../app/config.js')
-var Users = require('../app/collections/users.js')
+var db = require('../app/config.js');
+var Users = require('../app/collections/users.js');
 
 exports.getUrlTitle = function(url, cb) {
   request(url, function(err, res, html) {
@@ -27,10 +27,9 @@ exports.isValidUrl = function(url) {
 // Add additional utility functions below
 /************************************************************/
 exports.checkAuth = (req, res, next) => {
-  if (true) {
+  if (req.session.username) {
     res.redirect('/login');
   } else {
     next();
   }
-
 };
