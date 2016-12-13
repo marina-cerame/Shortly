@@ -2,6 +2,7 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 var db = require('./app/config');
 var Users = require('./app/collections/users');
@@ -20,8 +21,9 @@ app.use(bodyParser.json());
 // Parse forms (signup/login)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
+app.use(session({secret: 'secret', resave: true, saveUninitialized: true}));
 
-app.get('/', function(req, res) {
+app.get('/', function(req, res, next) {
   res.render('index');
 });
 
@@ -43,7 +45,7 @@ app.get('/links', function(req, res) {
   });
 });
 
-app.post('/links', function(req, res) {
+app.post('/links', function(req, res, next) {
   var uri = req.body.url;
 
   if (!util.isValidUrl(uri)) {
@@ -83,17 +85,18 @@ app.post('/signup', (req, res) => {
   let password = req.body.password;
 
   new User({ username: username, password: password }).fetch().then(function(found) {
-    console.log(found);
     if (found) {
-      res.status(200).render('login');
+      res.status(200).json(res);
     } else {
       Users.create({
         username: username,
         password: password
+      })
+      .then( () => {
+        console.log(req.session);
+        res.redirect('/');
       });
     }
-  }).then( () => {
-    res.status(201).render('login');
   });
 });
 
@@ -101,7 +104,7 @@ app.post('/login', (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
 
-  res.status(200).send();
+  res.status(200).redirect('/');
 
 });
 
